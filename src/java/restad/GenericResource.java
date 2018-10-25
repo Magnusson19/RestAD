@@ -5,6 +5,10 @@
  */
 package restad;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -12,6 +16,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
@@ -32,6 +37,26 @@ public class GenericResource {
      */
     public GenericResource() {
     }
+    
+    /**
+     * Retrieves representation of an instance of asd.GenericResource
+     * @return an instance of java.lang.String
+     */
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public String getHtml() {
+        //TODO return proper representation object
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * PUT method for updating or creating an instance of GenericResource
+     * @param content representation for the resource
+     */
+    @PUT
+    @Consumes(MediaType.TEXT_HTML)
+    public void putHtml(String content) {
+    }
 
     /**
  * POST method to register a new image
@@ -51,7 +76,30 @@ public class GenericResource {
                                  @FormParam("keywords") String keywords,
                                  @FormParam("author") String author,
                                  @FormParam("creation") String crea_date) {
-        return "H";
+        try {
+            Connection connection = null;
+            Class.forName("org.sqlite.JDBC"); 
+            //connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\myPC\\Desktop\\LAB4.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\nilmc\\Desktop\\LAB4.db");
+            
+            PreparedStatement statement = connection.prepareStatement("select max(id_imagen) from imagenes");
+            ResultSet rs = statement.executeQuery();
+            int id = 0;
+            if (rs.next()) id = rs.getInt(1);
+            else return "<html><head/><body><h1>DB it not inicialized</h1></body></html>";
+            statement = connection.prepareStatement("insert into imagenes values (?,?,?,?,?,?)");
+            statement.setInt(1, id+1);
+            statement.setString(2, title);
+            statement.setString(3, description);
+            statement.setString(4, keywords);
+            statement.setString(5, author);
+            statement.setString(6, crea_date);
+            if (statement.executeUpdate() == 1)return "<html><head/><body><h1>Registre realitzat!</h1></body></html>";
+        } catch(Exception e)
+        {
+          System.err.println(e.getMessage());
+        }
+        return "<html><head/><body><h1>Registre no realitzat</h1></body></html>";
     }
     
     /**
