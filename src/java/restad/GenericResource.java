@@ -5,10 +5,14 @@
  */
 package restad;
 
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -94,7 +98,10 @@ public class GenericResource {
             statement.setString(4, keywords);
             statement.setString(5, author);
             statement.setString(6, crea_date);
-            if (statement.executeUpdate() == 1)return "<html><head/><body><h1>Registre realitzat!</h1></body></html>";
+            if (statement.executeUpdate() == 1){
+                System.out.println(title);
+                return "<html><head/><body><h1>Registre realitzat!</h1></body></html>";
+            }
         } catch(Exception e)
         {
           System.err.println(e.getMessage());
@@ -131,7 +138,30 @@ public class GenericResource {
     @GET
     @Produces(MediaType.TEXT_HTML)
     public String listImages () {
-        return "h";
+        try {
+            Class.forName("org.sqlite.JDBC"); 
+            //Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\myPC\\Desktop\\LAB2.db");
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\nilmc\\Desktop\\LAB4.db");
+            PreparedStatement statement = connection.prepareStatement("select * from imagenes");
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+               System.out.print(rs.getInt("id_imagen") + " ");
+               System.out.print(rs.getString("titulo") + " ");
+               System.out.print(rs.getString("Descripcion") + " ");
+               System.out.print(rs.getString("palabras_clave") + " ");
+               System.out.print(rs.getString("autor") + " ");
+               System.out.print(rs.getString("fecha_creacion"));
+               
+               System.out.print(rs.getString("------------------------"));
+            }
+            if(connection != null)
+              connection.close();
+            return "<html><head/><body><h1>Llistat correcte</h1></body></html>";
+        } catch(Exception e)
+        {
+          System.err.println(e.getMessage());
+        }
+        return "<html><head/><body><h1>Error al llistar</h1></body></html>";
     }
     
     /**
