@@ -182,7 +182,7 @@ public class GenericResource {
         String resposta = null;
         try {
             Class.forName("org.sqlite.JDBC"); 
-            //Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\myPC\\Desktop\\LAB2.db");
+            //connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\myPC\\Desktop\\LAB4.db");
             connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\nilmc\\Desktop\\LAB4.db");
             PreparedStatement statement = connection.prepareStatement("select * from imagenes");
             ResultSet rs = statement.executeQuery();
@@ -234,7 +234,7 @@ public class GenericResource {
         String resposta = null;
         try {
             Class.forName("org.sqlite.JDBC"); 
-            //Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\myPC\\Desktop\\LAB2.db");
+            //connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\myPC\\Desktop\\LAB4.db");
             connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\nilmc\\Desktop\\LAB4.db");
             PreparedStatement statement = connection.prepareStatement("select * from imagenes where id_imagen = ?");
             statement.setInt(1, id);
@@ -283,7 +283,48 @@ public class GenericResource {
     @GET
     @Produces(MediaType.TEXT_HTML)
     public String searchByTitle (@PathParam("title") String title) {
-        return "H";
+        Connection connection = null;
+        String resposta = null;
+        try {
+            Class.forName("org.sqlite.JDBC"); 
+            //connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\myPC\\Desktop\\LAB4.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\nilmc\\Desktop\\LAB4.db");
+            PreparedStatement statement = connection.prepareStatement("select * from imagenes where titulo = ?");
+            statement.setString(1, title);
+            ResultSet rs = statement.executeQuery();
+            resposta = "<html><head/><body><h1>Llistar</h1><table border = \"1\" width = \"50%\">\n" +
+"                                                                   <tr>\n" +
+"                                                                       <th>ID</th>\n" +
+"                                                                       <th>Titulo</th>\n" +
+"                                                                       <th>Descripcion</th>\n" +
+                                                                        "<th>Palabras Clave</th>\n" +
+                                                                        "<th>Autor</th>\n" +
+                                                                        "<th>Fecha Creacion</th>\n" +
+"                                                                   </tr>";
+            while (rs.next()) {
+               resposta = resposta +"<tr>";
+               resposta  = resposta + "<td>" + String.valueOf(rs.getInt("id_imagen")) + "</td>";
+               resposta = resposta + "<td>" + rs.getString("titulo") + "</td>";
+               resposta = resposta + "<td>" + rs.getString("Descripcion") + "</td>";
+               resposta = resposta + "<td>" + rs.getString("palabras_clave") + "</td>";
+               resposta = resposta + "<td>" + rs.getString("autor") + "</td>";
+               resposta = resposta + "<td>" + rs.getString("fecha_creacion") + "</td>";
+               resposta = resposta + "</tr>";
+            }
+            resposta = resposta + "</table></body></html>";
+        } catch(Exception e)
+        {
+          System.err.println(e.getMessage());
+        }
+        finally {
+            if(connection != null)
+              try {
+                  connection.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(GenericResource.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return resposta;
     }
     
  /**
@@ -295,7 +336,48 @@ public class GenericResource {
     @GET
     @Produces(MediaType.TEXT_HTML)
     public String searchByCreationDate (@PathParam("date") String date) {
-        return "H";
+        Connection connection = null;
+        String resposta = null;
+        try {
+            Class.forName("org.sqlite.JDBC"); 
+            //connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\myPC\\Desktop\\LAB4.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\nilmc\\Desktop\\LAB4.db");
+            PreparedStatement statement = connection.prepareStatement("select * from imagenes where fecha_creacion = ?");
+            statement.setString(1, date);
+            ResultSet rs = statement.executeQuery();
+            resposta = "<html><head/><body><h1>Llistar</h1><table border = \"1\" width = \"50%\">\n" +
+"                                                                   <tr>\n" +
+"                                                                       <th>ID</th>\n" +
+"                                                                       <th>Titulo</th>\n" +
+"                                                                       <th>Descripcion</th>\n" +
+                                                                        "<th>Palabras Clave</th>\n" +
+                                                                        "<th>Autor</th>\n" +
+                                                                        "<th>Fecha Creacion</th>\n" +
+"                                                                   </tr>";
+            while (rs.next()) {
+               resposta = resposta +"<tr>";
+               resposta  = resposta + "<td>" + String.valueOf(rs.getInt("id_imagen")) + "</td>";
+               resposta = resposta + "<td>" + rs.getString("titulo") + "</td>";
+               resposta = resposta + "<td>" + rs.getString("Descripcion") + "</td>";
+               resposta = resposta + "<td>" + rs.getString("palabras_clave") + "</td>";
+               resposta = resposta + "<td>" + rs.getString("autor") + "</td>";
+               resposta = resposta + "<td>" + rs.getString("fecha_creacion") + "</td>";
+               resposta = resposta + "</tr>";
+            }
+            resposta = resposta + "</table></body></html>";
+        } catch(Exception e)
+        {
+          System.err.println(e.getMessage());
+        }
+        finally {
+            if(connection != null)
+              try {
+                  connection.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(GenericResource.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return resposta;
     }
     
     /**
@@ -307,7 +389,48 @@ public class GenericResource {
     @GET
     @Produces(MediaType.TEXT_HTML)
     public String searchByAuthor (@PathParam("author") String author) {
-        return "H";
+        Connection connection = null;
+        String resposta = null;
+        try {
+            Class.forName("org.sqlite.JDBC"); 
+            //connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\myPC\\Desktop\\LAB4.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\nilmc\\Desktop\\LAB4.db");
+            PreparedStatement statement = connection.prepareStatement("select * from imagenes where autor = ?");
+            statement.setString(1, author);
+            ResultSet rs = statement.executeQuery();
+            resposta = "<html><head/><body><h1>Llistar</h1><table border = \"1\" width = \"50%\">\n" +
+"                                                                   <tr>\n" +
+"                                                                       <th>ID</th>\n" +
+"                                                                       <th>Titulo</th>\n" +
+"                                                                       <th>Descripcion</th>\n" +
+                                                                        "<th>Palabras Clave</th>\n" +
+                                                                        "<th>Autor</th>\n" +
+                                                                        "<th>Fecha Creacion</th>\n" +
+"                                                                   </tr>";
+            while (rs.next()) {
+               resposta = resposta +"<tr>";
+               resposta  = resposta + "<td>" + String.valueOf(rs.getInt("id_imagen")) + "</td>";
+               resposta = resposta + "<td>" + rs.getString("titulo") + "</td>";
+               resposta = resposta + "<td>" + rs.getString("Descripcion") + "</td>";
+               resposta = resposta + "<td>" + rs.getString("palabras_clave") + "</td>";
+               resposta = resposta + "<td>" + rs.getString("autor") + "</td>";
+               resposta = resposta + "<td>" + rs.getString("fecha_creacion") + "</td>";
+               resposta = resposta + "</tr>";
+            }
+            resposta = resposta + "</table></body></html>";
+        } catch(Exception e)
+        {
+          System.err.println(e.getMessage());
+        }
+        finally {
+            if(connection != null)
+              try {
+                  connection.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(GenericResource.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return resposta;
     }
  /**
  * GET method to search images by keyword
@@ -318,7 +441,48 @@ public class GenericResource {
     @GET
     @Produces(MediaType.TEXT_HTML)
     public String searchByKeywords (@PathParam("keywords") String keywords) {
-        return "H";
+        Connection connection = null;
+        String resposta = null;
+        try {
+            Class.forName("org.sqlite.JDBC"); 
+            //connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\myPC\\Desktop\\LAB4.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\nilmc\\Desktop\\LAB4.db");
+            PreparedStatement statement = connection.prepareStatement("select * from imagenes where palabras_clave = ?");
+            statement.setString(1, keywords);
+            ResultSet rs = statement.executeQuery();
+            resposta = "<html><head/><body><h1>Llistar</h1><table border = \"1\" width = \"50%\">\n" +
+"                                                                   <tr>\n" +
+"                                                                       <th>ID</th>\n" +
+"                                                                       <th>Titulo</th>\n" +
+"                                                                       <th>Descripcion</th>\n" +
+                                                                        "<th>Palabras Clave</th>\n" +
+                                                                        "<th>Autor</th>\n" +
+                                                                        "<th>Fecha Creacion</th>\n" +
+"                                                                   </tr>";
+            while (rs.next()) {
+               resposta = resposta +"<tr>";
+               resposta  = resposta + "<td>" + String.valueOf(rs.getInt("id_imagen")) + "</td>";
+               resposta = resposta + "<td>" + rs.getString("titulo") + "</td>";
+               resposta = resposta + "<td>" + rs.getString("Descripcion") + "</td>";
+               resposta = resposta + "<td>" + rs.getString("palabras_clave") + "</td>";
+               resposta = resposta + "<td>" + rs.getString("autor") + "</td>";
+               resposta = resposta + "<td>" + rs.getString("fecha_creacion") + "</td>";
+               resposta = resposta + "</tr>";
+            }
+            resposta = resposta + "</table></body></html>";
+        } catch(Exception e)
+        {
+          System.err.println(e.getMessage());
+        }
+        finally {
+            if(connection != null)
+              try {
+                  connection.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(GenericResource.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return resposta;
     }
 
 }
