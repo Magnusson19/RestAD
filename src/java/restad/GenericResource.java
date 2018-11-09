@@ -289,8 +289,8 @@ public class GenericResource {
             Class.forName("org.sqlite.JDBC"); 
             //connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\myPC\\Desktop\\LAB4.db");
             connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\nilmc\\Desktop\\LAB4.db");
-            PreparedStatement statement = connection.prepareStatement("select * from imagenes where titulo = ?");
-            statement.setString(1, title);
+            PreparedStatement statement = connection.prepareStatement("select * from imagenes where titulo like ?");
+            statement.setString(1, "%" + title + "%");
             ResultSet rs = statement.executeQuery();
             resposta = "<html><head/><body><h1>Llistar</h1><table border = \"1\" width = \"50%\">\n" +
 "                                                                   <tr>\n" +
@@ -395,8 +395,8 @@ public class GenericResource {
             Class.forName("org.sqlite.JDBC"); 
             //connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\myPC\\Desktop\\LAB4.db");
             connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\nilmc\\Desktop\\LAB4.db");
-            PreparedStatement statement = connection.prepareStatement("select * from imagenes where autor = ?");
-            statement.setString(1, author);
+            PreparedStatement statement = connection.prepareStatement("select * from imagenes where autor like ?");
+            statement.setString(1, "%" + author + "%");
             ResultSet rs = statement.executeQuery();
             resposta = "<html><head/><body><h1>Llistar</h1><table border = \"1\" width = \"50%\">\n" +
 "                                                                   <tr>\n" +
@@ -447,8 +447,57 @@ public class GenericResource {
             Class.forName("org.sqlite.JDBC"); 
             //connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\myPC\\Desktop\\LAB4.db");
             connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\nilmc\\Desktop\\LAB4.db");
-            PreparedStatement statement = connection.prepareStatement("select * from imagenes where palabras_clave = ?");
-            statement.setString(1, keywords);
+            PreparedStatement statement = connection.prepareStatement("select * from imagenes where palabras_clave like ?");
+            statement.setString(1, "%" + keywords + "%");
+            ResultSet rs = statement.executeQuery();
+            resposta = "<html><head/><body><h1>Llistar</h1><table border = \"1\" width = \"50%\">\n" +
+"                                                                   <tr>\n" +
+"                                                                       <th>ID</th>\n" +
+"                                                                       <th>Titulo</th>\n" +
+"                                                                       <th>Descripcion</th>\n" +
+                                                                        "<th>Palabras Clave</th>\n" +
+                                                                        "<th>Autor</th>\n" +
+                                                                        "<th>Fecha Creacion</th>\n" +
+"                                                                   </tr>";
+            while (rs.next()) {
+               resposta = resposta +"<tr>";
+               resposta  = resposta + "<td>" + String.valueOf(rs.getInt("id_imagen")) + "</td>";
+               resposta = resposta + "<td>" + rs.getString("titulo") + "</td>";
+               resposta = resposta + "<td>" + rs.getString("Descripcion") + "</td>";
+               resposta = resposta + "<td>" + rs.getString("palabras_clave") + "</td>";
+               resposta = resposta + "<td>" + rs.getString("autor") + "</td>";
+               resposta = resposta + "<td>" + rs.getString("fecha_creacion") + "</td>";
+               resposta = resposta + "</tr>";
+            }
+            resposta = resposta + "</table></body></html>";
+        } catch(Exception e)
+        {
+          System.err.println(e.getMessage());
+        }
+        finally {
+            if(connection != null)
+              try {
+                  connection.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(GenericResource.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return resposta;
+    }
+    
+    @Path("searchTitleAuthor/{title},{author}")
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public String searchByTitleAuthor (@PathParam("title") String title, @PathParam("author") String author) {
+        Connection connection = null;
+        String resposta = null;
+        try {
+            Class.forName("org.sqlite.JDBC"); 
+            //connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\myPC\\Desktop\\LAB4.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\nilmc\\Desktop\\LAB4.db");
+            PreparedStatement statement = connection.prepareStatement("select * from imagenes where titulo like ? and autor like ?");
+            statement.setString(1, "%" + title + "%");
+            statement.setString(2, "%" + author + "%");
             ResultSet rs = statement.executeQuery();
             resposta = "<html><head/><body><h1>Llistar</h1><table border = \"1\" width = \"50%\">\n" +
 "                                                                   <tr>\n" +
