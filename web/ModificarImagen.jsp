@@ -20,9 +20,11 @@
          url = "jdbc:sqlite:C:\\Users\\nilmc\\Desktop\\LAB4.db"/>
         
                 
-        <sql:query dataSource = "${snapshot}" var = "result">
+        <sql:query dataSource = "${snapshot}" var="result">
             SELECT * from imagenes where id_imagen=1
         </sql:query>
+            
+            <c:import url="http://localhost:8080/RestAD/webresources/generic/searchID/1" var="r"></c:import>
         
                   
         <h1>Modificar Imagen</h1>

@@ -41,7 +41,7 @@ import org.glassfish.jersey.server.ResourceConfig;
  * @author nilmc
  */
 @Path("generic")
-public class GenericResource extends ResourceConfig {
+public class GenericResource {
     
 
     @Context
@@ -53,7 +53,7 @@ public class GenericResource extends ResourceConfig {
      * Creates a new instance of GenericResource
      */
     public GenericResource() {
-        register(MultiPartFeature.class);
+        
     }
     
     /**
