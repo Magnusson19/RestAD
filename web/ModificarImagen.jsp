@@ -28,19 +28,19 @@
         <h1>Modificar Imagen</h1>
         <form method="POST" action="http://localhost:8080/RestAD/webresources/generic/modify/">
             <label for="title"><b>Título</b></label>
-            <input type="text" name="title" value="${result.rows[0].titulo}">
+            <input type="text" name="title" value="${result.rows[0].titulo}" required>
             <br><br>
             <label for="description"><b>Descripción</b></label>
-            <textarea name="description" rows="5" cols="25" >${result.rows[0].descripcion}</textarea>
+            <textarea name="description" rows="5" cols="25" required>${result.rows[0].descripcion}</textarea>
             <br><br>
             <label for="keywords"><b>Palabras clave</b></label>
-            <input type="text" name="keywords" value="${result.rows[0].palabras_clave}">
+            <input type="text" name="keywords" value="${result.rows[0].palabras_clave}" required>
             <br><br>
             <label for="author"><b>Autor</b></label>
-            <input type="text" name="author" value="${result.rows[0].autor}">
+            <input type="text" name="author" value="${result.rows[0].autor}" required>
             <br><br>
             <label for="creation"><b>Fecha de creación</b></label>
-            <input type="date" name="creation" value="${result.rows[0].fecha_creacion}">
+            <input type="date" name="creation" value="${result.rows[0].fecha_creacion}"required>
             <br><br>
             <input type="submit" value="Submit" class="botonMenu">
         </form>

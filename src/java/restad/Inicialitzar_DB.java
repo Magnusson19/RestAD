@@ -54,7 +54,7 @@ public class Inicialitzar_DB extends HttpServlet {
           statement.executeUpdate("create table imagenes (id_imagen int primary key, titulo string, descripcion string," 
                                 + "palabras_clave string, autor string, fecha_creacion string)");
           
-          statement.executeUpdate("insert into imagenes values (1,'A','hola aixo es un text','A','A','1111-01-01')");
+          statement.executeUpdate("insert into imagenes values (1,'A','hola aixo es un text','A','A', '1111-01-01')");
           
             ResultSet rs = statement.executeQuery("select * from imagenes");
             rs.next();

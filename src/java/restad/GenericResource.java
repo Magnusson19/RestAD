@@ -5,7 +5,9 @@
  */
 package restad;
 
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -27,6 +29,11 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.glassfish.jersey.server.ResourceConfig;
+
 
 /**
  * REST Web Service
@@ -34,15 +41,19 @@ import javax.ws.rs.core.MediaType;
  * @author nilmc
  */
 @Path("generic")
-public class GenericResource {
+public class GenericResource extends ResourceConfig {
+    
 
     @Context
     private UriInfo context;
+    
+    
 
     /**
      * Creates a new instance of GenericResource
      */
     public GenericResource() {
+        register(MultiPartFeature.class);
     }
     
     /**
@@ -72,6 +83,8 @@ public class GenericResource {
  * @param keywords
  * @param author
  * @param crea_date
+     * @param uploadedInputStream
+     * @param fileDetail
  * @return
  */
     @Path("register")
@@ -82,12 +95,22 @@ public class GenericResource {
                                  @FormParam("description") String description,
                                  @FormParam("keywords") String keywords,
                                  @FormParam("author") String author,
-                                 @FormParam("creation") String crea_date) {
+                                 @FormParam("creation") String crea_date
+                                 //@FormDataParam("imagen") InputStream uploadedInputStream,
+                                 //@FormDataParam("imagen") FormDataContentDisposition fileDetail
+                                 ) {
+        
+        
         Connection connection = null;
         try {
             Class.forName("org.sqlite.JDBC"); 
             //connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\myPC\\Desktop\\LAB4.db");
             connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\nilmc\\Desktop\\LAB4.db");
+            
+            /*String uploadedFileLocation = "C:\\Users\\nilmc\\OneDrive\\Documents\\NetBeansProjects\\RestAD\\web\\Imagenes\\" + fileDetail.getFileName();
+
+            // save it
+            writeToFile(uploadedInputStream, uploadedFileLocation);*/
             
             PreparedStatement statement = connection.prepareStatement("select max(id_imagen) from imagenes");
             ResultSet rs = statement.executeQuery();
@@ -153,7 +176,7 @@ public class GenericResource {
             statement.setString(4, author);
             statement.setString(5, crea_date);
             if (statement.executeUpdate() == 1){
-                return "<html><head/><body><h1>Modificació realitzada!</h1></body></html>";
+                return "<html><head/><body><h1>Modificacio realitzada!</h1></body></html>";
             }
         } catch(Exception e)
         {
@@ -342,8 +365,8 @@ public class GenericResource {
             Class.forName("org.sqlite.JDBC"); 
             //connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\myPC\\Desktop\\LAB4.db");
             connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\nilmc\\Desktop\\LAB4.db");
-            PreparedStatement statement = connection.prepareStatement("select * from imagenes where fecha_creacion = ?");
-            statement.setString(1, date);
+            PreparedStatement statement = connection.prepareStatement("select * from imagenes where fecha_creacion like ?");
+            statement.setString(1, "%" + date + "%");
             ResultSet rs = statement.executeQuery();
             resposta = "<html><head/><body><h1>Llistar</h1><table border = \"1\" width = \"50%\">\n" +
 "                                                                   <tr>\n" +
@@ -533,5 +556,39 @@ public class GenericResource {
         }
         return resposta;
     }
+    
+    // save uploaded file to new location
+	private void writeToFile(InputStream uploadedInputStream,
+		String uploadedFileLocation) {
+            
+            OutputStream out = null;
+
+		try {
+			out = new FileOutputStream(new File(
+					uploadedFileLocation));
+			int read = 0;
+			byte[] bytes = new byte[1024];
+
+			out = new FileOutputStream(new File(uploadedFileLocation));
+			while ((read = uploadedInputStream.read(bytes)) != -1) {
+				out.write(bytes, 0, read);
+			}
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+                finally {
+                    if (out != null) {
+                        try {
+                            out.close();
+                        } catch (IOException ex) {
+                            Logger.getLogger(GenericResource.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+
+	}
 
 }

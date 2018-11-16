@@ -30,6 +30,9 @@
             <label for="creation"><b>Fecha de creación</b></label>
             <input type="date" name="creation" required>
             <br><br>
+            <!--<label for="imagen"><b>Inserta Imagen</b></label>
+            <input type="file" name="imagen" accept="image/JPEG" required>
+            <br><br>-->
             <input type="submit" value="Submit" class="botonMenu">
         </form>
     </body>
