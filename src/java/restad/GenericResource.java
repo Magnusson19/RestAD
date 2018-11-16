@@ -229,6 +229,7 @@ public class GenericResource {
     public String listImages () {
         Connection connection = null;
         String resposta = null;
+        String desc = null;
         try {
             Class.forName("org.sqlite.JDBC"); 
             //connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\myPC\\Desktop\\LAB4.db");
@@ -250,14 +251,16 @@ public class GenericResource {
                resposta = resposta +"<tr>";
                resposta  = resposta + "<td>" + String.valueOf(rs.getInt("id_imagen")) + "</td>";
                resposta = resposta + "<td>" + rs.getString("titulo") + "</td>";
-               resposta = resposta + "<td>" + rs.getString("Descripcion") + "</td>";
+               resposta = resposta + "<td>" + rs.getString("descripcion") + "</td>";
                resposta = resposta + "<td>" + rs.getString("palabras_clave") + "</td>";
                resposta = resposta + "<td>" + rs.getString("autor") + "</td>";
                resposta = resposta + "<td>" + rs.getString("fecha_creacion") + "</td>";
                resposta = resposta + "<td> <a href=\"/RestAD/Imagenes/"+rs.getString("nombre") +"\" target=_blank> Link </a> </td>";
+               desc = rs.getString("descripcion");
+               desc = desc.replace(' ', '+');
                resposta = resposta + "<td>" + "<a href=/RestAD/ModificarImagen.jsp?id="+ String.valueOf(rs.getInt("id_imagen")) +
                        "&title="+rs.getString("titulo")+
-                       "&description="+rs.getString("Descripcion")+
+                       "&description="+desc+
                        "&keywords="+ rs.getString("palabras_clave") +
                        "&author="+ rs.getString("autor") +
                        "&creation="+ rs.getString("fecha_creacion") +
