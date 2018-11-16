@@ -15,35 +15,29 @@
         <title>Modificar_Imatge</title>
         <link rel="stylesheet" type="text/css" href="style/estilos.css">
     </head>
-    
-        <sql:setDataSource var = "snapshot" driver = "org.sqlite.JDBC"
-         url = "jdbc:sqlite:C:\\Users\\nilmc\\Desktop\\LAB4.db"/>
-        
-                
-        <sql:query dataSource = "${snapshot}" var="result">
-            SELECT * from imagenes where id_imagen=1
-        </sql:query>
-            
-            <c:import url="http://localhost:8080/RestAD/webresources/generic/searchID/1" var="r"></c:import>
-        
-                  
+      
         <h1>Modificar Imagen</h1>
-        <form method="POST" action="http://localhost:8080/RestAD/webresources/generic/modify/">
+        <form method="POST" action="http://localhost:8080/RestAD/webresources/generic/modify/" enctype="multipart/form-data">
             <label for="title"><b>Título</b></label>
-            <input type="text" name="title" value="${result.rows[0].titulo}" required>
+            <input type="text" name="title" value=<%= request.getParameter("title")%> required>
             <br><br>
             <label for="description"><b>Descripción</b></label>
-            <textarea name="description" rows="5" cols="25" required>${result.rows[0].descripcion}</textarea>
+            <textarea name="description" rows="5" cols="25" required><%= request.getParameter("description")%></textarea>
             <br><br>
             <label for="keywords"><b>Palabras clave</b></label>
-            <input type="text" name="keywords" value="${result.rows[0].palabras_clave}" required>
+            <input type="text" name="keywords" value=<%= request.getParameter("keywords")%> required>
             <br><br>
             <label for="author"><b>Autor</b></label>
-            <input type="text" name="author" value="${result.rows[0].autor}" required>
+            <input type="text" name="author" value=<%= request.getParameter("author")%> required>
             <br><br>
             <label for="creation"><b>Fecha de creación</b></label>
-            <input type="date" name="creation" value="${result.rows[0].fecha_creacion}"required>
+            <input type="date" name="creation" value=<%= request.getParameter("creation")%> required>
             <br><br>
+            <label for="imagen"><b>Inserta Imagen</b></label>
+            <input type="file" name="imagen" accept="image/JPEG">
+            <br><br>
+            <input type="hidden" name="id" value=<%= request.getParameter("id")%>>
+            <br>
             <input type="submit" value="Submit" class="botonMenu">
         </form>
     

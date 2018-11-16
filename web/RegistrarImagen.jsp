@@ -14,7 +14,7 @@
     </head>
     <body>
         <h1>Registrar Imagen</h1>
-        <form method="POST" action="http://localhost:8080/RestAD/webresources/generic/register/">
+        <form method="POST" action="http://localhost:8080/RestAD/webresources/generic/register/" enctype="multipart/form-data">
             <label for="title"><b>Título</b></label>
             <input type="text" name="title" required >
             <br><br>
@@ -30,9 +30,9 @@
             <label for="creation"><b>Fecha de creación</b></label>
             <input type="date" name="creation" required>
             <br><br>
-            <!--<label for="imagen"><b>Inserta Imagen</b></label>
+            <label for="imagen"><b>Inserta Imagen</b></label>
             <input type="file" name="imagen" accept="image/JPEG" required>
-            <br><br>-->
+            <br><br>
             <input type="submit" value="Submit" class="botonMenu">
         </form>
     </body>

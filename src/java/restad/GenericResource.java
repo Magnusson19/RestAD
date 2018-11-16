@@ -53,7 +53,6 @@ public class GenericResource {
      * Creates a new instance of GenericResource
      */
     public GenericResource() {
-        
     }
     
     /**
@@ -89,15 +88,15 @@ public class GenericResource {
  */
     @Path("register")
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.TEXT_HTML)
-    public String registerImage (@FormParam("title") String title,
-                                 @FormParam("description") String description,
-                                 @FormParam("keywords") String keywords,
-                                 @FormParam("author") String author,
-                                 @FormParam("creation") String crea_date
-                                 //@FormDataParam("imagen") InputStream uploadedInputStream,
-                                 //@FormDataParam("imagen") FormDataContentDisposition fileDetail
+    public String registerImage (@FormDataParam("title") String title,
+                                 @FormDataParam("description") String description,
+                                 @FormDataParam("keywords") String keywords,
+                                 @FormDataParam("author") String author,
+                                 @FormDataParam("creation") String crea_date,
+                                 @FormDataParam("imagen") InputStream uploadedInputStream,
+                                 @FormDataParam("imagen") FormDataContentDisposition fileDetail
                                  ) {
         
         
@@ -107,23 +106,32 @@ public class GenericResource {
             //connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\myPC\\Desktop\\LAB4.db");
             connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\nilmc\\Desktop\\LAB4.db");
             
-            /*String uploadedFileLocation = "C:\\Users\\nilmc\\OneDrive\\Documents\\NetBeansProjects\\RestAD\\web\\Imagenes\\" + fileDetail.getFileName();
-
-            // save it
-            writeToFile(uploadedInputStream, uploadedFileLocation);*/
+            String name = fileDetail.getFileName();
+            
             
             PreparedStatement statement = connection.prepareStatement("select max(id_imagen) from imagenes");
             ResultSet rs = statement.executeQuery();
             int id = 0;
             if (rs.next()) id = rs.getInt(1);
             else return "<html><head/><body><h1>DB it not inicialized</h1></body></html>";
-            statement = connection.prepareStatement("insert into imagenes values (?,?,?,?,?,?)");
+            
+            statement = connection.prepareStatement("select * from imagenes where nombre = ?");
+            statement.setString(1, name);
+            rs = statement.executeQuery();
+            if (rs.next()) name = name + (id+1);
+            
+            String uploadedFileLocation = "C:\\Users\\nilmc\\OneDrive\\Documents\\NetBeansProjects\\RestAD\\web\\Imagenes\\" + name;
+            // save it
+            writeToFile(uploadedInputStream, uploadedFileLocation);
+            
+            statement = connection.prepareStatement("insert into imagenes values (?,?,?,?,?,?,?)");
             statement.setInt(1, id+1);
             statement.setString(2, title);
             statement.setString(3, description);
             statement.setString(4, keywords);
             statement.setString(5, author);
-            statement.setString(6, crea_date);
+            statement.setString(6, name);
+            statement.setString(7, crea_date);
             if (statement.executeUpdate() == 1){
                 return "<html><head/><body><h1>Registre realitzat!</h1></body></html>";
             }
@@ -149,32 +157,50 @@ public class GenericResource {
  * @param keywords
  * @param author
  * @param crea_date
+     * @param id
+     * @param uploadedInputStream
+     * @param fileDetail
  * @return
  */
     @Path("modify")
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)         //COM BUSQUEM? TOTS ELS VALORS ES PODEN MODIFICAR MENYS ID
+    @Consumes(MediaType.MULTIPART_FORM_DATA)         //COM BUSQUEM? TOTS ELS VALORS ES PODEN MODIFICAR MENYS ID
     @Produces(MediaType.TEXT_HTML)
-    public String modifyImage (@FormParam("title") String title,
-                                @FormParam("description") String description,
-                                @FormParam("keywords") String keywords,
-                                @FormParam("author") String author,
-                                @FormParam("creation") String crea_date) {
+    public String modifyImage (@FormDataParam("title") String title,
+                                 @FormDataParam("description") String description,
+                                 @FormDataParam("keywords") String keywords,
+                                 @FormDataParam("author") String author,
+                                 @FormDataParam("creation") String crea_date,
+                                 @FormDataParam("id") String id,
+                                 @FormDataParam("imagen") InputStream uploadedInputStream,
+                                 @FormDataParam("imagen") FormDataContentDisposition fileDetail) {
         Connection connection = null;
         try {
             Class.forName("org.sqlite.JDBC"); 
             //connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\myPC\\Desktop\\LAB4.db");
             connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\nilmc\\Desktop\\LAB4.db");
             
+            String name = fileDetail.getFileName();
             
-            PreparedStatement statement = connection.prepareStatement("update imagenes set titulo = ?, descripcion = ?,"
-                                                                    + "palabras_clave = ?, autor = ?,fecha_creacion = ?"
-                                                                    + "where id_imagen = 1");
+            PreparedStatement statement = connection.prepareStatement("select * from imagenes where nombre = ?");
+            statement.setString(1, name);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) name = name + (id);
+            
+            String uploadedFileLocation = "C:\\Users\\nilmc\\OneDrive\\Documents\\NetBeansProjects\\RestAD\\web\\Imagenes\\" + name;
+            // save it
+            writeToFile(uploadedInputStream, uploadedFileLocation);
+            
+            statement = connection.prepareStatement("update imagenes set titulo = ?, descripcion = ?,"
+                                                                    + "palabras_clave = ?, autor = ?, nombre = ?, fecha_creacion = ?"
+                                                                    + "where id_imagen = ?");
             statement.setString(1, title);
             statement.setString(2, description);
             statement.setString(3, keywords);
             statement.setString(4, author);
-            statement.setString(5, crea_date);
+            statement.setString(5, name);
+            statement.setString(6, crea_date);
+            statement.setString(7, id);
             if (statement.executeUpdate() == 1){
                 return "<html><head/><body><h1>Modificacio realitzada!</h1></body></html>";
             }
@@ -217,6 +243,8 @@ public class GenericResource {
                                                                         "<th>Palabras Clave</th>\n" +
                                                                         "<th>Autor</th>\n" +
                                                                         "<th>Fecha Creacion</th>\n" +
+                                                                        "<th>Imagen</th>" +
+                                                                        "<th>Modificar</th>\n" +
 "                                                                   </tr>";
             while (rs.next()) {
                resposta = resposta +"<tr>";
@@ -226,6 +254,14 @@ public class GenericResource {
                resposta = resposta + "<td>" + rs.getString("palabras_clave") + "</td>";
                resposta = resposta + "<td>" + rs.getString("autor") + "</td>";
                resposta = resposta + "<td>" + rs.getString("fecha_creacion") + "</td>";
+               resposta = resposta + "<td> <a href=\"/RestAD/Imagenes/"+rs.getString("nombre") +"\" target=_blank> Link </a> </td>";
+               resposta = resposta + "<td>" + "<a href=/RestAD/ModificarImagen.jsp?id="+ String.valueOf(rs.getInt("id_imagen")) +
+                       "&title="+rs.getString("titulo")+
+                       "&description="+rs.getString("Descripcion")+
+                       "&keywords="+ rs.getString("palabras_clave") +
+                       "&author="+ rs.getString("autor") +
+                       "&creation="+ rs.getString("fecha_creacion") +
+                       "> Modificar imatge </a>" + "</td>";
                resposta = resposta + "</tr>";
             }
             resposta = resposta + "</table></body></html>";
